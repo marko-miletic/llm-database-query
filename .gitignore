@@ -33,3 +33,23 @@ tmp/
 # ---- Docker / containers ----
 .docker/
 docker-compose.override.yml
+
+# ---- Python cache / artifacts ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ---- Python tooling caches ----
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+.pyre/
+.hypothesis/
+.coverage
+.coverage.*
+.cache/
+.dmypy.json
+
+# ---- Python version ----
+.python-version
