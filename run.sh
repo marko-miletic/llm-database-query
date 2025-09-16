@@ -10,11 +10,14 @@ else
 fi
 
 prompt=""
-read -r -p "Enter your prompt: " prompt
-
-if [ -z "$prompt" ]; then
-  echo "Error: prompt cannot be empty." >&2
-  exit 1
-fi
+while true; do
+  if ! read -r -p "Enter your prompt (press ENTER to ask again): " prompt; then
+    exit 0
+  fi
+  if [ -z "$prompt" ]; then
+    continue
+  fi
+  break
+done
 
 exec "$PYTHON" "$SCRIPT_DIR/main.py" "$prompt"
