@@ -45,7 +45,7 @@ def _generate_sample_data_tables(
 
 def run_text_to_sql(
     llm: LLMClient, user_question: str, execute_sql: Callable[[str], list[dict]]
-) -> tuple[list[dict], str]:
+) -> tuple[str, list[dict], str]:
     context_data = get_context_data()
 
     sample_tables = _generate_sample_data_tables(llm, user_question, context_data)
@@ -61,4 +61,4 @@ def run_text_to_sql(
 
     validate(sql, notes)
 
-    return execute_sql(sql), notes
+    return sql, execute_sql(sql), notes

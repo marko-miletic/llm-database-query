@@ -33,13 +33,17 @@ def _fmt_cell(col: str, val, widths: dict[str, int], numeric_cols: set[str]):
     return s.ljust(w)
 
 
-def format_query_output(query_response: tuple[list[dict], str]) -> str:
-    rows, note = query_response
+def format_query_output(query_response: tuple[str, list[dict], str]) -> str:
+    sql, rows, note = query_response
+    sql = (sql or "").strip()
+    note = (note or "").strip()
 
     if not rows:
         parts = []
-        if note.strip():
-            parts.append(f"Notes: {note.strip()}")
+        if note:
+            parts.append(f"Notes: {note}")
+        if sql:
+            parts.append(f"SQL: {sql}")
         parts.append("No rows returned.")
         return "\n".join(parts)
 
@@ -49,9 +53,13 @@ def format_query_output(query_response: tuple[list[dict], str]) -> str:
         if not isinstance(r, dict):
             import json
 
-            return (f"Notes: {note.strip()}\n" if note.strip() else "") + "\n".join(
-                [json.dumps(x, default=str) for x in rows]
-            )
+            parts = []
+            if note:
+                parts.append(f"Notes: {note}")
+            if sql:
+                parts.append(f"SQL: {sql}")
+            parts.extend([json.dumps(x, default=str) for x in rows])
+            return "\n".join(parts)
         for k in r.keys():
             if k not in seen:
                 seen.add(k)
@@ -84,8 +92,10 @@ def format_query_output(query_response: tuple[list[dict], str]) -> str:
         row_lines.append(line)
 
     parts = []
-    if note.strip():
-        parts.append(f"Notes: {note.strip()}")
+    if note:
+        parts.append(f"Notes: {note}")
+    if sql:
+        parts.append(f"SQL: {sql}")
     parts.append(header)
     parts.append(separator)
     parts.extend(row_lines)

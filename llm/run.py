@@ -10,7 +10,7 @@ DB_PROVIDER_CLIENT = {
     LLMProvider.GEMINI: GeminiClient,
 }
 
-def run(user_question: str) -> tuple[list[dict], str]:
+def run(user_question: str) -> tuple[str, list[dict], str]:
     llm = DB_PROVIDER_CLIENT[config.LLM_PROVIDER]()
     execute = get_query_method_all()
 
