@@ -1,22 +1,9 @@
-import sys
-
 from common.helper import format_query_output
+from llm.config import PromptIteration
 from llm.run import run
 
-DEFAULT_PROMPT = "Give me some random data from the database!"
-
-
-def _execute_and_print(prompt: str) -> None:
-    print("Prompt:", prompt, "\n")
-    print(format_query_output(run(prompt)), "\n")
-
-
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        first_prompt = sys.argv[1]
-        _execute_and_print(first_prompt)
-    else:
-        _execute_and_print(DEFAULT_PROMPT)
+    prompts = []
 
     try:
         while True:
@@ -31,7 +18,13 @@ if __name__ == "__main__":
             if user_input.lower() in {"quit", "exit", ":q"}:
                 break
 
-            _execute_and_print(user_input)
+            prompts.append(
+                PromptIteration(
+                    index=prompts[-1].index + 1 if prompts else 1,
+                    prompt=user_input,
+                )
+            )
+            print(format_query_output(run(prompts)), "\n")
 
     except KeyboardInterrupt:
         pass

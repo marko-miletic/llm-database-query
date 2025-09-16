@@ -1,3 +1,4 @@
+from llm.config import PromptIteration
 from llm.source.config import LLMContext
 
 PROMPT_INSTRUCTIONS = """
@@ -12,20 +13,23 @@ You are a senior test_data analyst generating safe SQL for PostgreSQL 15. Follow
   If the question is ambiguous, ask one clarifying question in "notes" and still produce your best safe guess.
 - Use ANSI identifiers and correct quoting for strings.
 - Do not hallucinate tables or columns.
+- Prompt history is ordered by index value for each history instance
 """
 
 
-def get_sql_prompt(user_question: str, llm_context_data: LLMContext) -> str:
+def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> str:
     return f"""
         {PROMPT_INSTRUCTIONS}
+        Prompt history:
+        {prompts}
         Context:
-        {llm_context_data.tables_and_columns}
+        {context_data.tables_and_columns}
         Relationships:
-        {llm_context_data.foreign_keys}
+        {context_data.foreign_keys}
         Rows count:
-        {llm_context_data.row_count}
+        {context_data.row_count}
         Sample test_data:
-        {llm_context_data.sample_data}
+        {context_data.sample_data}
         User question:
-        {user_question}
+        {prompts[-1].prompt}
     """

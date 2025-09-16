@@ -1,4 +1,5 @@
 from common import config
+from llm.config import PromptIteration
 
 
 def is_number(v) -> bool:
@@ -33,10 +34,14 @@ def _fmt_cell(col: str, val, widths: dict[str, int], numeric_cols: set[str]):
     return s.ljust(w)
 
 
-def format_query_output(query_response: tuple[str, list[dict], str]) -> str:
-    sql, rows, note = query_response
-    sql = (sql or "").strip()
-    note = (note or "").strip()
+def format_query_output(
+    query_response: tuple[list[dict], list[PromptIteration]],
+) -> str:
+    rows, prompts = query_response
+    latest_prompt = prompts[-1]
+    sql = (latest_prompt.sql or "").strip()
+    note = (latest_prompt.notes or "").strip()
+    prompt = (latest_prompt.prompt or "").strip()
 
     if not rows:
         parts = []
@@ -92,6 +97,8 @@ def format_query_output(query_response: tuple[str, list[dict], str]) -> str:
         row_lines.append(line)
 
     parts = []
+    if prompt:
+        parts.append(f"Prompt: {prompt}")
     if note:
         parts.append(f"Notes: {note}")
     if sql:
@@ -99,6 +106,7 @@ def format_query_output(query_response: tuple[str, list[dict], str]) -> str:
     parts.append(header)
     parts.append(separator)
     parts.extend(row_lines)
-    parts.append(f"\n{len(rows)} row(s).")
+    parts.append(f"{len(rows)} row(s).")
+    parts.append(f"{len(prompts)} message(s).")
 
-    return "\n".join(parts)
+    return "\n\n".join(parts)

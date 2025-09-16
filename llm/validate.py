@@ -1,5 +1,7 @@
 import re
 
+from llm.config import PromptIteration
+
 MODIFICATION_KEYWORDS = {
     "insert",
     "update",
@@ -85,13 +87,13 @@ def _disallow_select_into(sql: str) -> None:
         raise ValueError("SELECT ... INTO is not allowed.")
 
 
-def validate(sql: str, notes: str) -> None:
-    if not sql.strip():
-        raise ValueError(f"SQL prompt must be a non-empty string. Notes {notes}.")
+def validate(iteration_instance: PromptIteration) -> None:
+    if not iteration_instance.sql.strip():
+        raise ValueError(f"SQL prompt must be a non-empty string. Notes {iteration_instance.notes}.")
 
-    _ensure_single_statement(sql)
-    _disallow_cte(sql)
-    _require_select_start(sql)
+    _ensure_single_statement(iteration_instance.sql)
+    _disallow_cte(iteration_instance.sql)
+    _require_select_start(iteration_instance.sql)
 
-    _disallow_modifications(sql)
-    _disallow_select_into(sql)
+    _disallow_modifications(iteration_instance.sql)
+    _disallow_select_into(iteration_instance.sql)
