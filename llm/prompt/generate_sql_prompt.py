@@ -30,7 +30,7 @@ def _format_prompt_history(prompts: list[PromptIteration]) -> list[dict]:
                 "response": p.response[:5],
             }
         )
-    breakpoint()
+
     return output
 
 
