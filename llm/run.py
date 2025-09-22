@@ -7,13 +7,13 @@ from llm.config import PromptIteration
 from llm.pipelines.text_to_sql import run_text_to_sql
 from llm.providers.gemini.client import GeminiClient
 
-DB_PROVIDER_CLIENT = {
+LLM_PROVIDER_CLIENT = {
     LLMProvider.GEMINI.value: GeminiClient,
 }
 
 
 def run(prompts: list[PromptIteration]) -> list[PromptIteration]:
-    llm = DB_PROVIDER_CLIENT[config.LLM_PROVIDER]()
+    llm = LLM_PROVIDER_CLIENT[config.LLM_PROVIDER]()
     execute = get_query_method_all()
 
     return run_text_to_sql(llm, prompts, execute)

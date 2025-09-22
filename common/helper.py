@@ -60,7 +60,7 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
                 parts.append(f"Notes: {note}")
             if sql:
                 parts.append(f"SQL: {sql}")
-            parts.extend([json.dumps(x, default=str) for x in rows])
+            parts.extend([json.dumps(x, default=str) for x in (latest_prompt.response or [])])
             return "\n".join(parts)
         for k in r.keys():
             if k not in seen:

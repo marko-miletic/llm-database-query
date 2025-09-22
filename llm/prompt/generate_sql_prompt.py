@@ -3,7 +3,7 @@ from llm.source.config import LLMContext
 
 PROMPT_INSTRUCTIONS = """
 System / Instruction:
-You are a senior test_data analyst generating safe SQL for PostgreSQL 15. Follow the rules:
+You are a senior data analyst generating safe SQL for PostgreSQL 15. Follow the rules:
 - Return JSON only with keys: {"sql": string, "notes": string}
 - Generate exactly one SELECT statement. 
   No CTEs with writes, no DML/DDL, no temp tables, no functions that modify state.
@@ -27,7 +27,7 @@ def _format_prompt_history(prompts: list[PromptIteration]) -> list[dict]:
                 "prompt": p.prompt,
                 "notes": p.notes,
                 "sql": p.sql,
-                "response": p.response[:5],
+                "response": p.response[:5] if p.response else None,
             }
         )
 
@@ -45,7 +45,7 @@ def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> 
         {context_data.foreign_keys}
         Rows count:
         {context_data.row_count}
-        Sample test_data:
+        Sample data:
         {context_data.sample_data}
         User question:
         {prompts[-1].prompt}
