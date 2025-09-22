@@ -1,11 +1,9 @@
-from dataclasses import dataclass
+from enum import Enum
 
 
-@dataclass
-class DatabaseProvider:
+class DatabaseProvider(str, Enum):
     POSTGRES = "POSTGRES"
 
 
-@dataclass
-class LLMProvider:
+class LLMProvider(str, Enum):
     GEMINI = "GEMINI"

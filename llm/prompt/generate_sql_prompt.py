@@ -14,14 +14,31 @@ You are a senior test_data analyst generating safe SQL for PostgreSQL 15. Follow
 - Use ANSI identifiers and correct quoting for strings.
 - Do not hallucinate tables or columns.
 - Prompt history is ordered by index value for each history instance
+- Rely heavily on the prompt history if possible and do not ignore it in any way.
 """
+
+
+def _format_prompt_history(prompts: list[PromptIteration]) -> list[dict]:
+    output = []
+    for p in sorted(prompts, key=lambda x: x.index)[:-1]:
+        output.append(
+            {
+                "index": p.index,
+                "prompt": p.prompt,
+                "notes": p.notes,
+                "sql": p.sql,
+                "response": p.response[:5],
+            }
+        )
+    breakpoint()
+    return output
 
 
 def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> str:
     return f"""
         {PROMPT_INSTRUCTIONS}
         Prompt history:
-        {prompts}
+        {_format_prompt_history(prompts)}
         Context:
         {context_data.tables_and_columns}
         Relationships:

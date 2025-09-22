@@ -44,12 +44,11 @@ MODIFICATION_KEYWORDS = {
 RE_CTE_START = re.compile(r"^\s*\(?\s*with\b", re.IGNORECASE)
 RE_SELECT_START = re.compile(r"^\s*\(?\s*select\b", re.IGNORECASE)
 RE_EXPLAIN_START = re.compile(r"^\s*\(?\s*explain\b", re.IGNORECASE)
+RE_SELECT_INTO = re.compile(r"\bselect\b[^;]*\binto\b", re.IGNORECASE | re.DOTALL)
 RE_WORD_BOUNDARY = {
-    kw: re.compile(r"\b{re.escape(kw)}\b", re.IGNORECASE)
+    kw: re.compile(rf"\b{re.escape(kw)}\b", re.IGNORECASE)
     for kw in MODIFICATION_KEYWORDS
 }
-RE_SELECT_INTO = re.compile(r"\bselect\b[^;]*\binto\b", re.IGNORECASE | re.DOTALL)
-
 
 def _ensure_single_statement(sql: str) -> None:
     semicolons = [m.start() for m in re.finditer(r";", sql)]

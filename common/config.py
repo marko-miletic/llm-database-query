@@ -2,10 +2,12 @@ from os import getenv
 
 from dotenv import load_dotenv
 
+from common.constants import DatabaseProvider, LLMProvider
+
 load_dotenv()
 
-DB_PROVIDER = getenv("DB_PROVIDER")
-LLM_PROVIDER = getenv("LLM_PROVIDER")
+DB_PROVIDER = DatabaseProvider(getenv("DB_PROVIDER", DatabaseProvider.POSTGRES.value))
+LLM_PROVIDER = LLMProvider(getenv("LLM_PROVIDER", LLMProvider.GEMINI.value))
 
 DB_HOST = getenv("DB_HOST")
 DB_PORT = getenv("DB_PORT")

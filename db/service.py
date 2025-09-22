@@ -6,7 +6,7 @@ from db.core.client import DatabaseClient
 from db.providers.postgres.client import PostgreSQLClient
 
 DB_PROVIDER_CLIENT = {
-    DatabaseProvider.POSTGRES: PostgreSQLClient,
+    DatabaseProvider.POSTGRES.value: PostgreSQLClient,
 }
 
 

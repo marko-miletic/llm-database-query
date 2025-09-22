@@ -5,7 +5,7 @@ from llm.source.postgres.introspection import generate_llm_context_data
 
 
 DB_PROVIDER_LLM_CONTEXT = {
-    DatabaseProvider.POSTGRES: generate_llm_context_data,
+    DatabaseProvider.POSTGRES.value: generate_llm_context_data,
 }
 
 

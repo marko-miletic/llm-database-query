@@ -49,7 +49,7 @@ def run_text_to_sql(
     llm: LLMClient,
     prompts: list[PromptIteration],
     execute_sql: Callable[[str], list[dict]]
-) -> tuple[list[dict], list[PromptIteration]]:
+) -> list[PromptIteration]:
     latest_prompt = prompts[-1]
 
     context_data = get_context_data()
@@ -64,5 +64,6 @@ def run_text_to_sql(
     latest_prompt.notes = sql_payload.get("notes", "")
 
     validate(latest_prompt)
+    latest_prompt.response = execute_sql(latest_prompt.sql)
 
-    return execute_sql(latest_prompt.sql), prompts
+    return prompts

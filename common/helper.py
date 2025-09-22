@@ -34,16 +34,13 @@ def _fmt_cell(col: str, val, widths: dict[str, int], numeric_cols: set[str]):
     return s.ljust(w)
 
 
-def format_query_output(
-    query_response: tuple[list[dict], list[PromptIteration]],
-) -> str:
-    rows, prompts = query_response
+def format_query_output(prompts: list[PromptIteration]) -> str:
     latest_prompt = prompts[-1]
     sql = (latest_prompt.sql or "").strip()
     note = (latest_prompt.notes or "").strip()
     prompt = (latest_prompt.prompt or "").strip()
 
-    if not rows:
+    if not latest_prompt.response:
         parts = []
         if note:
             parts.append(f"Notes: {note}")
@@ -54,7 +51,7 @@ def format_query_output(
 
     columns: list[str] = []
     seen = set()
-    for r in rows:
+    for r in latest_prompt.response:
         if not isinstance(r, dict):
             import json
 
@@ -77,7 +74,7 @@ def format_query_output(
 
     for col in columns:
         max_width = widths[col]
-        for r in rows:
+        for r in latest_prompt.response:
             val = r.get(col)
             if is_number(val):
                 numeric_cols.add(col)
@@ -90,7 +87,7 @@ def format_query_output(
     separator = "-+-".join("-" * widths[col] for col in columns)
 
     row_lines = []
-    for r in rows:
+    for r in latest_prompt.response:
         line = " | ".join(
             _fmt_cell(col, r.get(col), widths, numeric_cols) for col in columns
         )
@@ -106,7 +103,7 @@ def format_query_output(
     parts.append(header)
     parts.append(separator)
     parts.extend(row_lines)
-    parts.append(f"{len(rows)} row(s).")
+    parts.append(f"{len(latest_prompt.response)} row(s).")
     parts.append(f"{len(prompts)} message(s).")
 
     return "\n\n".join(parts)
