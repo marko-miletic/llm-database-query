@@ -95,15 +95,16 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
 
     parts = []
     if prompt:
-        parts.append(f"Prompt: {prompt}")
+        parts.append(f"Prompt: {prompt}\n")
     if note:
-        parts.append(f"Notes: {note}")
+        parts.append(f"Notes: {note}\n")
     if sql:
-        parts.append(f"SQL: {sql}")
+        parts.append(f"SQL: {sql}\n")
     parts.append(header)
     parts.append(separator)
     parts.extend(row_lines)
+    parts.extend("\n")
     parts.append(f"{len(latest_prompt.response)} row(s).")
     parts.append(f"{len(prompts)} message(s).")
 
-    return "\n\n".join(parts)
+    return "\n".join(parts)
