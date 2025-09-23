@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from common import config
 from common.constants import LLMProvider
 from db.service import get_query_method_all

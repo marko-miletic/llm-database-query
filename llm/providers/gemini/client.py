@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import google.generativeai as gen_ai
 
 from common import config

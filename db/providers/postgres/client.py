@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 from db.core.client import DatabaseClient
 from db.providers.postgres.connection import get_cursor
 
