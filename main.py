@@ -2,29 +2,79 @@ from common.helper import format_query_output
 from llm.config import PromptIteration
 from llm.run import run
 
-if __name__ == "__main__":
-    prompts = []
 
+def _print_help() -> None:
+    print(
+        "Commands:\n"
+        "  :help      Show this help\n"
+        "  :history   Show prompt history indexes and questions\n"
+        "  :reset     Clear prompt history\n"
+        "  quit/exit  Exit the program\n"
+    )
+
+
+def _print_history(prompts: list[PromptIteration]) -> None:
+    if not prompts:
+        print("(history is empty)")
+        return
+
+    for p in sorted(prompts, key=lambda x: x.index):
+        print(f"[{p.index}] {p.prompt}")
+
+
+def _next_index(prompts: list[PromptIteration]) -> int:
+    return (prompts[-1].index + 1) if prompts else 1
+
+
+def main() -> None:
+    prompt_text = "Enter your next question (press ENTER to just show this prompt again, or type 'quit' to exit):\n> "
+
+    prompts = []
     try:
         while True:
             try:
-                user_input = input(
-                    "Enter your next question (press ENTER to just show this prompt again, or type 'quit' to exit):\n> "
-                ).strip()
+                user_input = input(prompt_text).strip()
             except EOFError:
                 break
+
             if not user_input:
                 continue
-            if user_input.lower() in {"quit", "exit", ":q"}:
+
+            lower = user_input.lower()
+            if lower in {"quit", "exit", ":q"}:
                 break
+
+            if lower == ":help":
+                _print_help()
+                continue
+            if lower == ":history":
+                _print_history(prompts)
+                continue
+            if lower == ":reset":
+                prompts.clear()
+                print("History cleared.")
+                continue
 
             prompts.append(
                 PromptIteration(
-                    index=prompts[-1].index + 1 if prompts else 1,
+                    index=_next_index(prompts),
                     prompt=user_input,
                 )
             )
-            print(format_query_output(run(prompts)), "\n")
+
+            try:
+                result = run(prompts)
+                print(format_query_output(result), "\n")
+            except KeyboardInterrupt:
+                print(
+                    "\nInterrupted. You can type ':help' for commands or 'quit' to exit."
+                )
+            except Exception:
+                raise
 
     except KeyboardInterrupt:
-        pass
+        print()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
