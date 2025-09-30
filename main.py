@@ -82,7 +82,7 @@ def main() -> None:
 
             try:
                 full_path = export_file(file_format, prompts[-1].response)
-                print(f"File exported successfully at {full_path}.")
+                print(f"\nFile exported successfully at {full_path}.")
             except ValueError as e:
                 print(e)
                 break

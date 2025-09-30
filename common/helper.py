@@ -115,9 +115,8 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
 
 def get_file_extension(file_type: str) -> str:
     return {
-        ResponseExportTypes.TXT.value: ResponseExportTypesExtensions.TXT.value,
         ResponseExportTypes.CSV.value: ResponseExportTypesExtensions.CSV.value,
         ResponseExportTypes.XML.value: ResponseExportTypesExtensions.XML.value,
         ResponseExportTypes.EXCEL.value: ResponseExportTypesExtensions.XLSX.value,
         ResponseExportTypes.PARQUET.value: ResponseExportTypesExtensions.PARQUET.value,
-    }.get(file_type, ResponseExportTypesExtensions.TXT.value)
+    }.get(file_type)
