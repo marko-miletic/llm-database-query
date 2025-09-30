@@ -1,3 +1,4 @@
+from common.export import export_file
 from common.helper import format_query_output
 from llm.config import PromptIteration
 from llm.run import run
@@ -28,6 +29,7 @@ def _next_index(prompts: list[PromptIteration]) -> int:
 
 def main() -> None:
     prompt_text = "Enter your next question (press ENTER to just show this prompt again, or type 'quit' to exit):\n> "
+    export_text = "Choose the file format:\n> "
 
     prompts = []
     try:
@@ -36,7 +38,6 @@ def main() -> None:
                 user_input = input(prompt_text).strip()
             except EOFError:
                 break
-
             if not user_input:
                 continue
 
@@ -71,6 +72,20 @@ def main() -> None:
                 )
             except Exception:
                 raise
+
+            try:
+                export_file_format = input(export_text).strip()
+            except EOFError:
+                break
+            if not user_input:
+                continue
+
+            try:
+                full_path = export_file(export_file_format, prompts[-1].response)
+                print(f"File exported successfully at {full_path}.")
+            except ValueError as e:
+                print(e)
+                break
 
     except KeyboardInterrupt:
         print()

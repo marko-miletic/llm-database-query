@@ -21,3 +21,5 @@ GEMINI_MODEL = "models/gemini-2.5-flash"
 SAMPLE_DATA_LIMIT = 10
 
 TERMINAL_OUTPUT_COLUMN_WIDTH = 40
+
+EXPORT_FILE_BASE_NAME = "query_export"
