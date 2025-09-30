@@ -1,52 +1,74 @@
+import json
+
 from llm.config import PromptIteration
 from llm.source.config import LLMContext
 
 PROMPT_INSTRUCTIONS = """
-System / Instruction:
-You are a senior data analyst generating safe SQL for PostgreSQL 15. Follow the rules:
-- Return JSON only with keys: {"sql": string, "notes": string}
-- Generate exactly one SELECT statement. 
-  No CTEs with writes, no DML/DDL, no temp tables, no functions that modify state.
-- Add an explicit LIMIT 100 unless the user specified a lower limit.
-- Prefer inner joins only when necessary; avoid Cartesian products.
-- Use the provided schema exactly as given. 
-  If the question is ambiguous, ask one clarifying question in "notes" and still produce your best safe guess.
-- Use ANSI identifiers and correct quoting for strings.
-- Do not hallucinate tables or columns.
-- Prompt history is ordered by index value for each history instance
-- Rely heavily on the prompt history if possible and do not ignore it in any way.
+## Persona & Goal
+You are a world-class, senior database data analyst. 
+Your primary goal is to convert a user's natural language question 
+into a single, safe, and syntactically correct database SELECT statement.
+
+## Output Requirements
+You **MUST** respond with a single, raw JSON object (no markdown, no preamble).
+The JSON object must have exactly two keys:
+- `sql`: A string containing the generated SQL query.
+- `notes`: A string explaining your step-by-step reasoning for building the query. 
+    This must include which tables and columns you chose, how you decided to join them, and any assumptions you made. 
+    If the user's question is ambiguous, state your best guess and ask a single clarifying question here.
+
+Example format:
+```json
+{
+  "sql": "SELECT ...",
+  "notes": "Step 1: Identified the need for columns X and Y from the user's question.\\n
+  Step 2: Located column X in `table_a` and column Y in `table_b`.\\n
+  Step 3: Used the foreign key `table_a.id -> table_b.a_id` to perform a LEFT JOIN.\\n
+  Step 4: Added a LIMIT of 100 as no other limit was specified."
+}
 """
 
+def _format_prompt_history(prompts: list[PromptIteration]) -> str:
+    if not prompts:
+        return "No previous prompts / history."
 
-def _format_prompt_history(prompts: list[PromptIteration]) -> list[dict]:
     output = []
     for p in sorted(prompts, key=lambda x: x.index)[:-1]:
         output.append(
             {
-                "index": p.index,
-                "prompt": p.prompt,
-                "notes": p.notes,
-                "sql": p.sql,
-                "response": p.response[:5] if p.response else None,
+                "turn": p.index,
+                "user_question": p.prompt,
+                "your_notes": p.notes,
+                "generated_sql": p.sql,
+                "query_result_preview": p.response[:5] if p.response else None,
             }
         )
 
-    return output
+    return json.dumps(output, indent=2)
 
 
 def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> str:
+    current_question = prompts[-1].prompt
+
     return f"""
-        {PROMPT_INSTRUCTIONS} \n
-        Prompt history:
-        {_format_prompt_history(prompts)} \n
-        Context:
-        {context_data.tables_and_columns} \n
-        Relationships:
-        {context_data.foreign_keys} \n
-        Rows count:
-        {context_data.row_count} \n
-        Sample data:
-        {context_data.sample_data} \n
-        User question:
-        {prompts[-1].prompt} \n
-    """
+{PROMPT_INSTRUCTIONS}
+
+## Prompt History
+{_format_prompt_history(prompts)}
+
+## Database Schema
+### Tables & Columns
+{context_data.tables_and_columns}
+
+### Relationships (Foreign Keys)
+{context_data.foreign_keys}
+
+### Table Row Counts
+{context_data.row_count}
+
+### Sample Data
+{context_data.sample_data}
+
+## User Question
+{current_question}
+"""
