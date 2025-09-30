@@ -74,14 +74,14 @@ def main() -> None:
                 raise
 
             try:
-                export_file_format = input(export_text).strip()
+                file_format = input(export_text).strip()
             except EOFError:
                 break
             if not user_input:
                 continue
 
             try:
-                full_path = export_file(export_file_format, prompts[-1].response)
+                full_path = export_file(file_format, prompts[-1].response)
                 print(f"File exported successfully at {full_path}.")
             except ValueError as e:
                 print(e)

@@ -1,4 +1,5 @@
 from common import config
+from common.constants import ResponseExportTypes, ResponseExportTypesExtensions
 from llm.config import PromptIteration
 
 
@@ -60,7 +61,9 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
                 parts.append(f"Notes: {note}")
             if sql:
                 parts.append(f"SQL: {sql}")
-            parts.extend([json.dumps(x, default=str) for x in (latest_prompt.response or [])])
+            parts.extend(
+                [json.dumps(x, default=str) for x in (latest_prompt.response or [])]
+            )
             return "\n".join(parts)
         for k in r.keys():
             if k not in seen:
@@ -108,3 +111,13 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
     parts.append(f"{len(prompts)} message(s).")
 
     return "\n".join(parts)
+
+
+def get_file_extension(file_type: str) -> str:
+    return {
+        ResponseExportTypes.TXT.value: ResponseExportTypesExtensions.TXT.value,
+        ResponseExportTypes.CSV.value: ResponseExportTypesExtensions.CSV.value,
+        ResponseExportTypes.XML.value: ResponseExportTypesExtensions.XML.value,
+        ResponseExportTypes.EXCEL.value: ResponseExportTypesExtensions.XLSX.value,
+        ResponseExportTypes.PARQUET.value: ResponseExportTypesExtensions.PARQUET.value,
+    }.get(file_type, ResponseExportTypesExtensions.TXT.value)

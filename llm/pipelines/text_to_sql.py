@@ -57,6 +57,7 @@ def run_text_to_sql(
 
     sql_prompt = get_sql_prompt(prompts, context_data)
     sql_raw = llm.generate(sql_prompt)
+
     sql_payload = _extract_response_data(sql_raw)
     latest_prompt.sql = sql_payload.get("sql")
     latest_prompt.notes = sql_payload.get("notes", "")
