@@ -2,4 +2,8 @@ python-dotenv
 google-generativeai
 psycopg2-binary
 pandas
+pandas-stubs
 openpyxl
+pyarrow
+fastparquet
+lxml
