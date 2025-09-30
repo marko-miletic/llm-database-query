@@ -36,17 +36,17 @@ def _format_prompt_history(prompts: list[PromptIteration]) -> list[dict]:
 
 def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> str:
     return f"""
-        {PROMPT_INSTRUCTIONS}
+        {PROMPT_INSTRUCTIONS} \n
         Prompt history:
-        {_format_prompt_history(prompts)}
+        {_format_prompt_history(prompts)} \n
         Context:
-        {context_data.tables_and_columns}
+        {context_data.tables_and_columns} \n
         Relationships:
-        {context_data.foreign_keys}
+        {context_data.foreign_keys} \n
         Rows count:
-        {context_data.row_count}
+        {context_data.row_count} \n
         Sample data:
-        {context_data.sample_data}
+        {context_data.sample_data} \n
         User question:
-        {prompts[-1].prompt}
+        {prompts[-1].prompt} \n
     """
