@@ -11,8 +11,10 @@ from common.helper import get_file_extension
 def _get_full_path(file_name: str, file_format: str, sub_path: str | None = "Documents") -> Path:
     return Path.home() / sub_path / f"{file_name}.{get_file_extension(file_format)}"
 
+
 def _get_file_name() -> str:
     return f"{config.EXPORT_FILE_BASE_NAME}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+
 
 def export_file(file_format: str, prompt_response: list[dict]) -> Path:
     if file_format.upper() not in ResponseExportTypes:

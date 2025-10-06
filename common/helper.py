@@ -25,12 +25,7 @@ def _fmt_cell(col: str, val, widths: dict[str, int], numeric_cols: set[str]):
     if (
         col in numeric_cols
         and s
-        and s.replace("_", "")
-        .replace(",", "")
-        .replace(" ", "")
-        .replace(".", "", 1)
-        .lstrip("-+")
-        .isdigit()
+        and s.replace("_", "").replace(",", "").replace(" ", "").replace(".", "", 1).lstrip("-+").isdigit()
     ):
         return s.rjust(w)
 
@@ -63,18 +58,14 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
                 parts.append(f"Notes: {note}")
             if sql:
                 parts.append(f"SQL: {sql}")
-            parts.extend(
-                [json.dumps(x, default=str) for x in (latest_prompt.response or [])]
-            )
+            parts.extend([json.dumps(x, default=str) for x in (latest_prompt.response or [])])
             return "\n".join(parts)
         for k in r.keys():
             if k not in seen:
                 seen.add(k)
                 columns.append(str(k))
 
-    widths = {
-        col: min(len(col), config.TERMINAL_OUTPUT_COLUMN_WIDTH) for col in columns
-    }
+    widths = {col: min(len(col), config.TERMINAL_OUTPUT_COLUMN_WIDTH) for col in columns}
     numeric_cols = set()
 
     for col in columns:
@@ -93,9 +84,7 @@ def format_query_output(prompts: list[PromptIteration]) -> str:
 
     row_lines = []
     for r in latest_prompt.response:
-        line = " | ".join(
-            _fmt_cell(col, r.get(col), widths, numeric_cols) for col in columns
-        )
+        line = " | ".join(_fmt_cell(col, r.get(col), widths, numeric_cols) for col in columns)
         row_lines.append(line)
 
     parts = []

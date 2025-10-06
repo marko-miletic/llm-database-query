@@ -67,9 +67,7 @@ def main() -> None:
                 result = run(prompts)
                 print(format_query_output(result), "\n")
             except KeyboardInterrupt:
-                print(
-                    "\nInterrupted. You can type ':help' for commands or 'quit' to exit."
-                )
+                print("\nInterrupted. You can type ':help' for commands or 'quit' to exit.")
             except Exception:
                 raise
 

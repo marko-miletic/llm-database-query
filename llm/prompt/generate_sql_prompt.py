@@ -29,6 +29,7 @@ Example format:
 }
 """
 
+
 def _format_prompt_history(prompts: list[PromptIteration]) -> str:
     if not prompts:
         return "No previous prompts / history."

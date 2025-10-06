@@ -24,9 +24,7 @@ def _extract_response_data(raw_text: str) -> dict:
     try:
         return json.loads(text)
     except json.JSONDecodeError as e:
-        raise ValueError(
-            f"Failed to parse model JSON: {e}\nRaw text: {raw_text}"
-        ) from e
+        raise ValueError(f"Failed to parse model JSON: {e}\nRaw text: {raw_text}") from e
 
 
 def _generate_sample_data_tables(
@@ -44,9 +42,7 @@ def _generate_sample_data_tables(
 
 
 def run_text_to_sql(
-    llm: LLMClient,
-    prompts: list[PromptIteration],
-    execute_sql: Callable[[str], list[dict]]
+    llm: LLMClient, prompts: list[PromptIteration], execute_sql: Callable[[str], list[dict]]
 ) -> list[PromptIteration]:
     latest_prompt = prompts[-1]
 
