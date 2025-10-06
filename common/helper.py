@@ -1,3 +1,5 @@
+from datetime import date, datetime
+
 from common import config
 from common.constants import ResponseExportTypes, ResponseExportTypesExtensions
 from llm.config import PromptIteration
@@ -120,3 +122,9 @@ def get_file_extension(file_type: str) -> str:
         ResponseExportTypes.EXCEL.value: ResponseExportTypesExtensions.XLSX.value,
         ResponseExportTypes.PARQUET.value: ResponseExportTypesExtensions.PARQUET.value,
     }.get(file_type)
+
+
+def custom_json_serial(obj):
+    if isinstance(obj, (datetime, date)):
+        return obj.isoformat()
+    raise TypeError("Type %s not serializable" % type(obj))

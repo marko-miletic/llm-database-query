@@ -1,5 +1,6 @@
 import json
 
+from common.helper import custom_json_serial
 from llm.config import PromptIteration
 from llm.source.config import LLMContext
 
@@ -44,7 +45,7 @@ def _format_prompt_history(prompts: list[PromptIteration]) -> str:
             }
         )
 
-    return json.dumps(output, indent=2)
+    return json.dumps(output, indent=2, default=custom_json_serial)
 
 
 def get_sql_prompt(prompts: list[PromptIteration], context_data: LLMContext) -> str:
