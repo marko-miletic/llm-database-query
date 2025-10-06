@@ -77,7 +77,7 @@ def main() -> None:
                 file_format = input(export_text).strip()
             except EOFError:
                 break
-            if not user_input:
+            if not file_format:
                 continue
 
             try:
