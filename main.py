@@ -1,21 +1,8 @@
 from common.helper import format_query_output
-from common.terminal_message import print_prompt_info, print_export_to_file_info
+from common.terminal_message import print_prompt_info, print_export_to_file_info, print_history
 from export.local import export_file
 from llm.config import PromptIteration
 from llm.run import run
-
-
-def _print_history(prompts: list[PromptIteration]) -> None:
-    if not prompts:
-        print("(history is empty)")
-        return
-
-    for p in sorted(prompts, key=lambda x: x.index):
-        print(f"[{p.index}] {p.prompt}")
-
-
-def _next_index(prompts: list[PromptIteration]) -> int:
-    return (prompts[-1].index + 1) if prompts else 1
 
 
 def main() -> None:
@@ -35,7 +22,7 @@ def main() -> None:
                 break
 
             if lower == ":history":
-                _print_history(prompts)
+                print_history(prompts)
                 continue
             if lower == ":reset":
                 prompts.clear()
@@ -44,7 +31,7 @@ def main() -> None:
 
             prompts.append(
                 PromptIteration(
-                    index=_next_index(prompts),
+                    index=(prompts[-1].index + 1) if prompts else 1,
                     prompt=user_input,
                 )
             )

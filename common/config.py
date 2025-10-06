@@ -16,7 +16,7 @@ DB_USER = getenv("DB_USER")
 DB_PASSWORD = getenv("DB_PASSWORD")
 
 GEMINI_API_KEY = getenv("GEMINI_API_KEY")
-GEMINI_MODEL = "models/gemini-2.5-flash"
+GEMINI_MODEL = "models/gemini-2.5-pro"
 
 SAMPLE_DATA_LIMIT = 10
 

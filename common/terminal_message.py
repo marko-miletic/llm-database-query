@@ -1,3 +1,6 @@
+from llm.config import PromptIteration
+
+
 def print_prompt_info() -> None:
     print(
         "Enter your question (press ENTER to just show this prompt again, or type 'quit' to exit):\n"
@@ -16,3 +19,12 @@ def print_export_to_file_info() -> None:
         "  (*) PARQUET\n"
         "  quit/exit  Exit the program\n"
     )
+
+
+def print_history(prompts: list[PromptIteration]) -> None:
+    if not prompts:
+        print("(history is empty)")
+        return
+
+    for p in sorted(prompts, key=lambda x: x.index):
+        print(f"[{p.index}] {p.prompt}")
