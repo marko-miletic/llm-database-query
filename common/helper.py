@@ -116,4 +116,5 @@ def get_file_extension(file_type: str) -> str:
 def custom_json_serial(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
+
     raise TypeError("Type %s not serializable" % type(obj))

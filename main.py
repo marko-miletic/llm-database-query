@@ -1,17 +1,8 @@
-from common.export import export_file
 from common.helper import format_query_output
+from common.terminal_message import print_prompt_info, print_export_to_file_info
+from export.local import export_file
 from llm.config import PromptIteration
 from llm.run import run
-
-
-def _print_help() -> None:
-    print(
-        "Commands:\n"
-        "  :help      Show this help\n"
-        "  :history   Show prompt history indexes and questions\n"
-        "  :reset     Clear prompt history\n"
-        "  quit/exit  Exit the program\n"
-    )
 
 
 def _print_history(prompts: list[PromptIteration]) -> None:
@@ -28,14 +19,12 @@ def _next_index(prompts: list[PromptIteration]) -> int:
 
 
 def main() -> None:
-    prompt_text = "Enter your next question (press ENTER to just show this prompt again, or type 'quit' to exit):\n> "
-    export_text = "Choose the file format:\n> "
-
     prompts = []
     try:
         while True:
             try:
-                user_input = input(prompt_text).strip()
+                print_prompt_info()
+                user_input = input("> ").strip()
             except EOFError:
                 break
             if not user_input:
@@ -45,9 +34,6 @@ def main() -> None:
             if lower in {"quit", "exit", ":q"}:
                 break
 
-            if lower == ":help":
-                _print_help()
-                continue
             if lower == ":history":
                 _print_history(prompts)
                 continue
@@ -72,11 +58,16 @@ def main() -> None:
                 raise
 
             try:
-                file_format = input(export_text).strip()
+                print_export_to_file_info()
+                file_format = input("> ").strip()
             except EOFError:
                 break
             if not file_format:
                 continue
+
+            lower = file_format.lower()
+            if lower in {"quit", "exit", ":q"}:
+                break
 
             try:
                 full_path = export_file(file_format, prompts[-1].response)
