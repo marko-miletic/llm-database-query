@@ -61,13 +61,6 @@ def _ensure_single_statement(sql: str) -> None:
         raise ValueError("Only a single SELECT statement is allowed.")
 
 
-def _disallow_cte(sql: str) -> None:
-    if RE_CTE_START.search(sql):
-        raise ValueError(
-            f"CTEs are not allowed (queries starting with WITH are rejected)."
-        )
-
-
 def _disallow_modifications(sql: str) -> None:
     for kw, pat in RE_WORD_BOUNDARY.items():
         if pat.search(sql):
@@ -91,7 +84,6 @@ def validate(iteration_instance: PromptIteration) -> None:
         raise ValueError(f"SQL prompt must be a non-empty string. Notes {iteration_instance.notes}.")
 
     _ensure_single_statement(iteration_instance.sql)
-    _disallow_cte(iteration_instance.sql)
     _require_select_start(iteration_instance.sql)
 
     _disallow_modifications(iteration_instance.sql)
