@@ -11,7 +11,7 @@ def main() -> None:
         while True:
             try:
                 print_prompt_info()
-                user_input = input("> ").strip()
+                user_input = input("(>) ").strip()
             except EOFError:
                 break
             if not user_input:
@@ -24,9 +24,36 @@ def main() -> None:
             if lower == ":history":
                 print_history(prompts)
                 continue
+
             if lower == ":reset":
                 prompts.clear()
-                print("History cleared.")
+                print("(History cleared.)\n")
+                continue
+
+            if lower == ":export":
+                if not prompts:
+                    print("(No data available for export.)\n")
+                    continue
+
+                try:
+                    print_export_to_file_info()
+                    file_format = input("(>) ").strip()
+                except EOFError:
+                    break
+                if not file_format:
+                    continue
+
+                lower = file_format.lower()
+                if lower in {"quit", "exit", ":q"}:
+                    break
+
+                try:
+                    full_path = export_file(file_format, prompts[-1].response)
+                    print(f"\n(File exported successfully at {full_path}.)\n")
+                except ValueError as e:
+                    print(e)
+                    break
+
                 continue
 
             prompts.append(
@@ -43,25 +70,6 @@ def main() -> None:
                 print("\nInterrupted. You can type ':help' for commands or 'quit' to exit.")
             except Exception:
                 raise
-
-            try:
-                print_export_to_file_info()
-                file_format = input("> ").strip()
-            except EOFError:
-                break
-            if not file_format:
-                continue
-
-            lower = file_format.lower()
-            if lower in {"quit", "exit", ":q"}:
-                break
-
-            try:
-                full_path = export_file(file_format, prompts[-1].response)
-                print(f"\nFile exported successfully at {full_path}.")
-            except ValueError as e:
-                print(e)
-                break
 
     except KeyboardInterrupt:
         print()
