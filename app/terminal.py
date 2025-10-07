@@ -7,60 +7,63 @@ from llm.run import run
 
 class ChatTerminal:
     def __init__(self) -> None:
-        self.prompts = []
-        self.running = True
-        self.commands = {
+        self._prompts = []
+        self._running = True
+        self._commands = {
             ":history": self._handle_history,
             ":export": self._handle_export,
             ":reset": self._handle_reset,
             # exit commands
-            "quit": self._handle_quit,
-            "exit": self._handle_quit,
+            ":quit": self._handle_quit,
+            ":exit": self._handle_quit,
             ":q": self._handle_quit,
         }
 
     def run(self) -> None:
-        while self.running:
+        while self._running:
             try:
                 print_prompt_info()
                 user_input = input("(>) ").strip()
                 if not user_input:
                     continue
 
-                special_handler = self.commands.get(user_input.lower())
-                if special_handler is not None:
-                    special_handler()
-                else:
+                if user_input.lower() not in self._commands:
+                    if user_input.startswith(":"):
+                        print("(Invalid command input!)\n")
+                        continue
+
                     self._handle_prompt(user_input)
+                else:
+                    self._commands[user_input.lower()]()
 
             except (KeyboardInterrupt, EOFError):
-                self.running = False
+                self._running = False
 
     def _handle_prompt(self, prompt_text: str) -> None:
-        self.prompts.append(
-            PromptIteration(index=(self.prompts[-1].index + 1) if self.prompts else 1, prompt=prompt_text)
+        self._prompts.append(
+            PromptIteration(index=(self._prompts[-1].index + 1) if self._prompts else 1, prompt=prompt_text)
         )
 
         try:
-            result = run(self.prompts)
+            result = run(self._prompts)
             print(format_query_output(result), "\n")
         except Exception as e:
             print(f"An error occurred: {e}")
-            self.prompts.pop()
+            self._prompts.pop()
 
     def _handle_history(self) -> None:
-        print_history(self.prompts)
+        print_history(self._prompts)
 
     def _handle_reset(self) -> None:
-        self.prompts.clear()
+        self._prompts.clear()
         print("(History cleared.)\n")
 
     def _handle_quit(self) -> None:
-        self.running = False
+        self._running = False
         print("(Goodbye!)")
 
     def _handle_export(self) -> None:
-        if not self.prompts:
+        if not self._prompts:
             print("(No data available for export.)\n")
             return
 
@@ -72,8 +75,8 @@ class ChatTerminal:
             return
 
         try:
-            last_response = self.prompts[-1].response
+            last_response = self._prompts[-1].response
             full_path = export_file(file_format, last_response)
-            print(f"\n(File exported successfully at {full_path}.)\n")
+            print(f"(File exported successfully at {full_path}.)\n")
         except ValueError as e:
             print(f"Export Error: {e}")

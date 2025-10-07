@@ -22,7 +22,7 @@ def print_export_to_file_info() -> None:
 
 def print_history(prompts: list[PromptIteration]) -> None:
     if not prompts:
-        print("(history is empty)\n")
+        print("(History is empty.)\n")
         return
 
     for p in sorted(prompts, key=lambda x: x.index):
