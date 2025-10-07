@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 from common import config
 from common.constants import ResponseExportTypes, ResponseExportTypesExtensions
@@ -116,5 +117,8 @@ def get_file_extension(file_type: str) -> str:
 def custom_json_serial(obj):
     if isinstance(obj, (datetime, date)):
         return obj.isoformat()
+
+    if isinstance(obj, Decimal):
+        return float(obj)
 
     raise TypeError("Type %s not serializable" % type(obj))
