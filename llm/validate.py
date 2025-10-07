@@ -42,7 +42,6 @@ MODIFICATION_KEYWORDS = {
 }
 
 RE_CTE_START = re.compile(r"^\s*\(?\s*with\b", re.IGNORECASE)
-RE_SELECT_START = re.compile(r"^\s*\(?\s*select\b", re.IGNORECASE)
 RE_EXPLAIN_START = re.compile(r"^\s*\(?\s*explain\b", re.IGNORECASE)
 RE_SELECT_INTO = re.compile(r"\bselect\b[^;]*\binto\b", re.IGNORECASE | re.DOTALL)
 RE_WORD_BOUNDARY = {kw: re.compile(rf"\b{re.escape(kw)}\b", re.IGNORECASE) for kw in MODIFICATION_KEYWORDS}
@@ -68,8 +67,6 @@ def _disallow_modifications(sql: str) -> None:
 def _require_select_start(sql: str) -> None:
     if RE_EXPLAIN_START.search(sql):
         raise ValueError("Only SELECT statements are allowed (no EXPLAIN).")
-    if not RE_SELECT_START.search(sql):
-        raise ValueError("Only SELECT statements are allowed.")
 
 
 def _disallow_select_into(sql: str) -> None:
