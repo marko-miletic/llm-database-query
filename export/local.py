@@ -24,6 +24,7 @@ def export_file(file_format: str, prompt_response: list[dict]) -> Path:
 
     file_name = _get_file_name()
     full_path = _get_full_path(file_name, file_format.upper())
+    full_path.parent.mkdir(parents=True, exist_ok=True)
 
     data_frame = pd.DataFrame(prompt_response)
     pandas_file_export_function = getattr(data_frame, f"to_{file_format.lower()}", None)
