@@ -1,5 +1,5 @@
-from llm.config import PromptIteration
 from common.constants import ResponseExportTypes
+from llm.config import PromptIteration
 
 
 def print_prompt_info() -> None:
@@ -8,7 +8,7 @@ def print_prompt_info() -> None:
         "  :export       Export response data to local file\n"
         "  :history      Show prompt history indexes and questions\n"
         "  :reset        Clear prompt history\n"
-        "  :q/quit/exit  Exit the program\n"
+        "  :q/:quit/:exit  Exit the program\n"
     )
 
 
