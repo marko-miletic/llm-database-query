@@ -121,4 +121,4 @@ def custom_json_serial(obj):
     if isinstance(obj, Decimal):
         return float(obj)
 
-    raise TypeError("Type %s not serializable" % type(obj))
+    raise TypeError(f"Type {type(obj)} not serializable")

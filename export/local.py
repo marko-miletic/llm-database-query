@@ -5,6 +5,7 @@ import pandas as pd
 
 from common import config
 from common.constants import ResponseExportTypes
+from common.error import FileExportError
 from common.helper import get_file_extension
 
 
@@ -18,7 +19,7 @@ def _get_file_name() -> str:
 
 def export_file(file_format: str, prompt_response: list[dict]) -> Path:
     if file_format.upper() not in ResponseExportTypes:
-        raise ValueError(
+        raise FileExportError(
             f"Invalid export file format: {file_format.upper()}. Supported formats: {ResponseExportTypes.values()}."
         )
 
@@ -26,8 +27,11 @@ def export_file(file_format: str, prompt_response: list[dict]) -> Path:
     full_path = _get_full_path(file_name, file_format.upper())
     full_path.parent.mkdir(parents=True, exist_ok=True)
 
-    data_frame = pd.DataFrame(prompt_response)
-    pandas_file_export_function = getattr(data_frame, f"to_{file_format.lower()}", None)
-    pandas_file_export_function(full_path, index=False)
+    try:
+        data_frame = pd.DataFrame(prompt_response)
+        pandas_file_export_function = getattr(data_frame, f"to_{file_format.lower()}", None)
+        pandas_file_export_function(full_path, index=False)
+    except Exception as e:
+        raise FileExportError(f"Error while exporting file: {e}") from e
 
     return full_path

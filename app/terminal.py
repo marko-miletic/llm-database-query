@@ -1,3 +1,4 @@
+from common.error import FileExportError
 from common.helper import format_query_output
 from common.terminal_message import print_prompt_info, print_export_to_file_info, print_history
 from export.local import export_file
@@ -78,5 +79,5 @@ class ChatTerminal:
             last_response = self._prompts[-1].response
             full_path = export_file(file_format, last_response)
             print(f"(File exported successfully at {full_path}.)\n")
-        except ValueError as e:
+        except FileExportError as e:
             print(f"Export Error: {e}")
