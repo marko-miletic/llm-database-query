@@ -1,8 +1,8 @@
-from app.terminal import ChatTerminal
+from app.terminal.command import CommandTerminal
 
 
 def main() -> None:
-    app = ChatTerminal()
+    app = CommandTerminal()
     app.run()
 
 

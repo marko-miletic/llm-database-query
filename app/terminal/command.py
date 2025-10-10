@@ -1,12 +1,12 @@
+from app.terminal.terminal_message import print_prompt_info, print_export_to_file_info, print_history
 from common.error import FileExportError
 from common.helper import format_query_output
-from common.terminal_message import print_prompt_info, print_export_to_file_info, print_history
 from export.local import export_file
 from llm.config import PromptIteration
 from llm.run import run
 
 
-class ChatTerminal:
+class CommandTerminal:
     def __init__(self) -> None:
         self._prompts = []
         self._running = True
